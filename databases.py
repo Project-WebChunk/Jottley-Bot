@@ -93,8 +93,11 @@ class Database:
         return {"snipIndex": snippetIndex, "chapterIndex": chapterIndex, 
                 "bookIndex": bookIndex, "ids": [bookID, chapterID, snippetID]}
 
-    def getBook(self, bookID):
-        return self.books.find_one({'_id': bookID})
+    def getBook(self, bookID, userID):
+        user = self.users.find_one({'discord': userID})
+        if user:
+            return self.books.find_one({'_id': bookID, 'by': user['_id']})
+        return None
 
     def getSnippet(self, bookID, chapterID, snippetID):
         book = self.books.find_one({'_id': bookID})
