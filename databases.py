@@ -17,6 +17,20 @@ class Database:
 
     def getUser(self, id):
         return self.users.find_one({'discord': id})
+    
+    def registerUser(self, id, key):
+        user = self.users.find_one({'key': key})
+        if user:
+            self.users.update_one({'_id': user['_id']}, {'$set': {'discord': id}})
+            return [True, user]
+        return [False, None]
+    
+    def logout(self, id):
+        user = self.users.find_one({'discord': id})
+        if user:
+            self.users.update_one({'_id': user['_id']}, {'$set': {'discord': None}})
+            return user
+        return None
 
     def updateName(self, email, name):
         self.users.update_one({'email': email}, {'$set': {'username': name}})
